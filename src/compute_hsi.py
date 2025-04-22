@@ -1,28 +1,52 @@
 """
 compute_hsi.py
-Placeholder HSI calculator using the poverty variable.
+Generic HSI calculator that dynamically reads aliases from the CSV and computes percentiles for each variable.
 """
+import csv
+from pathlib import Path
+
 import pandas as pd
+
+# Locate the config file relative to this script
+CONFIG_PATH = Path(__file__).parents[1] / "configs" / "variables.csv"
 
 
 def dummy_hsi(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Simple hazard susceptibility demo:
-    1. Rename the raw ACS poverty estimate
-    2. Use it directly as the 'score'
-    3. Compute a percentile rank
+    Dynamic hazard susceptibility demo:
+    1. Load alias-to-ACS-variable mapping from the config CSV.
+    2. Rename DataFrame columns from raw ACS codes to aliases.
+    3. For each alias (except TOT_POP), treat its value as a series,
+       compute its percentile rank, and add SPL_<alias> and RPL_<alias>.
     """
     df = df.copy()
 
-    # Rename the ACS poverty column to a shorter name
-    # (raw ACS subject table code S1701_C01_040E)
-    if "S1701_C01_040E" in df.columns:
-        df = df.rename(columns={"S1701_C01_040E": "EP_POV"})
-    else:
-        raise KeyError("Expected column S1701_C01_040E not found in DataFrame")
+    # 1. Read alias mapping
+    alias_map = {}
+    with CONFIG_PATH.open(newline="", encoding="utf8") as fh:
+        reader = csv.DictReader(fh)
+        if not {"alias", "variable"}.issubset(reader.fieldnames):
+            raise RuntimeError(
+                f"Config CSV must have 'alias' and 'variable' headers: {CONFIG_PATH}"
+            )
+        for row in reader:
+            alias = row["alias"].strip()
+            var   = row["variable"].strip()
+            alias_map[alias] = var
 
-    # Use the poverty percentage directly as our demo 'series'
-    df["SPL_DUMMY"] = df["EP_POV"]
-    # Compute percentile rank (0 to 1)
-    df["RPL_DUMMY"] = df["SPL_DUMMY"].rank(pct=True).round(4)
+    # 2. Rename raw ACS columns to alias names
+    rename_map = {raw: alias for alias, raw in alias_map.items()}
+    df = df.rename(columns=rename_map)
+
+    # 3. Compute percentiles for each alias except TOT_POP
+    for alias in alias_map:
+        if alias == "TOT_POP":
+            continue
+        spl_col = f"SPL_{alias}"
+        rpl_col = f"RPL_{alias}"
+        # Use the alias column directly as the series
+        df[spl_col] = df[alias]
+        # Compute percentile rank
+        df[rpl_col] = df[spl_col].rank(pct=True).round(4)
+
     return df

@@ -1,52 +1,68 @@
 """
 compute_hsi.py
-Generic HSI calculator that dynamically reads aliases from the CSV and computes percentiles for each variable.
+Dynamic HSI calculator for Guam 2020 Decennial data.
+Reads alias/expression pairs from configs/variables.csv,
+evaluates expressions (supports + and -),
+and computes percentile ranks (RPL_) for each SPL_ series.
 """
+
 import csv
+import re
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
-# Locate the config file relative to this script
+# Path to alias mapping
 CONFIG_PATH = Path(__file__).parents[1] / "configs" / "variables.csv"
 
+_TOKEN_RE = re.compile(r"[A-Za-z0-9_]+")
 
-def dummy_hsi(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Dynamic hazard susceptibility demo:
-    1. Load alias-to-ACS-variable mapping from the config CSV.
-    2. Rename DataFrame columns from raw ACS codes to aliases.
-    3. For each alias (except TOT_POP), treat its value as a series,
-       compute its percentile rank, and add SPL_<alias> and RPL_<alias>.
-    """
-    df = df.copy()
-
-    # 1. Read alias mapping
+def _load_alias_map():
     alias_map = {}
     with CONFIG_PATH.open(newline="", encoding="utf8") as fh:
         reader = csv.DictReader(fh)
-        if not {"alias", "variable"}.issubset(reader.fieldnames):
-            raise RuntimeError(
-                f"Config CSV must have 'alias' and 'variable' headers: {CONFIG_PATH}"
-            )
         for row in reader:
             alias = row["alias"].strip()
-            var   = row["variable"].strip()
-            alias_map[alias] = var
+            expr  = row["variable"].strip()
+            alias_map[alias] = expr
+    return alias_map
 
-    # 2. Rename raw ACS columns to alias names
-    rename_map = {raw: alias for alias, raw in alias_map.items()}
-    df = df.rename(columns=rename_map)
+def _evaluate_aliases(df: pd.DataFrame, alias_map: dict) -> pd.DataFrame:
+    """Create new columns for each alias expression."""
+    df = df.copy()
+    for alias, expr in alias_map.items():
+        if alias in df.columns:
+            continue
+        # Simple copy
+        if _TOKEN_RE.fullmatch(expr):
+            df[alias] = pd.to_numeric(df.get(expr, np.nan), errors="coerce")
+            continue
 
-    # 3. Compute percentiles for each alias except TOT_POP
+        # Build Python expression referencing df columns
+        py_expr = expr
+        for token in _TOKEN_RE.findall(expr):
+            py_expr = py_expr.replace(token, f"df['{token}']")
+        try:
+            df[alias] = eval(py_expr)
+        except Exception:
+            df[alias] = np.nan
+    return df
+
+def _add_percentiles(df: pd.DataFrame, alias_map: dict) -> pd.DataFrame:
+    df = df.copy()
     for alias in alias_map:
-        if alias == "TOT_POP":
+        # Skip population denominator
+        if alias.upper() in {"E_TOTPOP", "TOT_POP", "TOTPOP"}:
             continue
         spl_col = f"SPL_{alias}"
         rpl_col = f"RPL_{alias}"
-        # Use the alias column directly as the series
         df[spl_col] = df[alias]
-        # Compute percentile rank
         df[rpl_col] = df[spl_col].rank(pct=True).round(4)
+    return df
 
+def hsi(df: pd.DataFrame) -> pd.DataFrame:
+    alias_map = _load_alias_map()
+    df = _evaluate_aliases(df, alias_map)
+    df = _add_percentiles(df, alias_map)
     return df

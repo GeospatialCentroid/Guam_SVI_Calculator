@@ -10,6 +10,7 @@ Because every transformation is driven by a CSV, **you can swap‑in a different
 variable list** (e.g. Guam, US States) **without touching the
 Python code**.
 
+
 ---
 
 ## 2 Directory layout
@@ -35,14 +36,14 @@ project‑root/
 
 ```bash
 python -m venv venv         # create isolated environment (optional)
-source venv/bin/activate    # on Windows: venv\Scriptsctivate
+source venv/bin/activate    # on Windows:source venv\Scripts\Activate
 pip install -r requirements.txt   # pandas, requests, numpy only
 
 python -m src.main --state 66 --year 2020 --geography place --outfile hsi_output.csv
 ```
 
 *First run* downloads data from the Census API and writes a copy under
-`cache/…csv`. If the API is unreachable on later runs the programme
+`cache/…csv`. If the API is unreachable on later runs the program
 **re‑uses that cached copy automatically**.
 
 ---
@@ -164,5 +165,6 @@ python -m src.main --state 66 --year 2020 --geography place --outfile hsi_output
 
 
 ---
-
+## References
+OpenAI. (2025). ChatGPT (May 7th version) [Large language model]. https://chat.openai.com/chat
 ---

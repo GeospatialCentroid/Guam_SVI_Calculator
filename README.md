@@ -166,5 +166,7 @@ python -m src.main --state 66 --year 2020 --geography place --outfile hsi_output
 
 ---
 ## References
+
 OpenAI. (2025). ChatGPT (May 7th version) [Large language model]. https://chat.openai.com/chat
+
 ---

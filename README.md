@@ -127,7 +127,23 @@ python -m src.main --state 66 --year 2020 --geography place --outfile hsi_output
   message, pointing you to gaps in *variables.csv*.
 * **Expression errors** – Problematic expressions resolve to `NaN`; the rest of
   the pipeline (percentiles, sums) still executes.
+  
+---
+## 8 Mapping the data
+To map the data a places shapefile is needed.
+A places shapefile for the state you are working with can be downloaded from https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2020&layergroup=Places
+This file has been downloaded for Guam and can be found in 'cache/tl_2020_66_place.zip'
 
+With a places shape file you can call the following script to join the computed HSI values with the shapefile
+```bash
+python src/join_csv_to_shapefile.py cache/tl_2020_66_place.zip cache/2020_66_place_dpgu.csv PLACEFP place --output cache/joined_places.shp
+```
+Replacing the following parameters as appropriate:
+* cache/tl_2020_66_place.zip: The path to the zipped or unzipped shapefile
+* cache/2020_66_place_dpgu.csv: The path to the generated CSV file
+* PLACEFP: The column name to be joined from the shapefile
+* place: The column name to be joined from the CSV file
+* --output cache/joined_places.shp: The output file to be created
 ---
 
 ## 10 Appendix A – Key regular expressions

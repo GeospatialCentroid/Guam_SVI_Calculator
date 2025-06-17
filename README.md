@@ -56,7 +56,7 @@ python -m src.main --state 66 --year 2020 --geography place --outfile hsi_output
 | **dataset**    | Census product slug (matches API URL segment)                                     | `dpgu` (2020 Guam Data Profile)            |
 | **variable**   | ‑ A raw Census code **or**<br>‑ Any arithmetic *expression* referencing raw codes | `(E_POV150 / S1701_C01_001E) * 100`        |
 
-*No limits*: use `+ – * / ( )` and NumPy names (e.g. `np.sqrt`) in expressions.
+*No limits*: use `+ – * / ( )`, and `**` for powers (e.g **0.5 for square root)
 
 ---
 

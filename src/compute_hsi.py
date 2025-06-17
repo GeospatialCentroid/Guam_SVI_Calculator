@@ -30,6 +30,7 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
+import math
 
 ###############################################################################
 # 1. Configuration ------------------------------------------------------------
@@ -40,7 +41,7 @@ DEFAULT_CONFIG = Path(__file__).parents[1] / "configs" / "variables.csv"
 # In the alias expression, *tokens* (variable names) are the substrings that look
 # like   ABC123   or   TOTAL_POP   – i.e. letters, numbers and underscores only.
 # We use this regex to find every such token so we can wrap it in df["TOKEN"].
-TOKEN_RE = re.compile(r"[A-Za-z0-9_]+")
+TOKEN_RE = re.compile(r"\b[A-Z]{1,4}\d{0,3}_[0-9]{4}[A-Z]?\b")
 
 ###############################################################################
 # 2. Internal helpers ----------------------------------------------------------
@@ -102,8 +103,11 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
         safe_locals = {"df": df, "np": np}
 
         try:
+
             df[alias] = pd.eval(safe_expr, local_dict=safe_locals, engine="python")
+            print(alias,"👍",safe_expr)
         except Exception:
+            print(alias,"❌",safe_expr)
             # Any issue → mark as NaN so downstream ranking ignores it
             df[alias] = np.nan
 
@@ -163,7 +167,6 @@ def hsi(df: pd.DataFrame, *, config_path: Path | None = None) -> pd.DataFrame:
     """
     config_path = config_path or DEFAULT_CONFIG
     alias_map = _load_alias_map(config_path)
-
     df = _evaluate_aliases(df, alias_map)
     df = _add_percentiles(df, alias_map)
     return df

@@ -67,7 +67,7 @@ VAR_RE = re.compile(r"\b[A-Z]{1,4}\d{0,3}_[0-9]{4}[A-Z]?\b")
 
 # The Census API refuses requests with >50 variables.  We therefore slice long
 # lists into CHUNK_SIZE‑sized segments and fire multiple calls.
-CHUNK_SIZE = 50
+CHUNK_SIZE = 45
 
 # Official “no‑data” sentinels used by several Census products.  Mapping them
 # to NaN at ingestion guarantees that all later arithmetic and percentile
@@ -219,6 +219,14 @@ def download_data(
         • One column per requested variable code
     """
     base_url = build_dataset_url(year, product)
+    print("base_url",base_url+"/variables.json")
+
+    # ---- Check to make sure the variables exist for download to avoid further errors
+    missing_variables = check_missing_census_variables(var_codes,base_url+"/variables.json")
+    if len(missing_variables)>0:
+        print("We're missing variables",missing_variables)
+        return
+
     geokeys = geokeys_for(geography)
 
     partials: list[pd.DataFrame] = []
@@ -226,7 +234,7 @@ def download_data(
     # ------------------------------------------------------------------ loop over 50‑var chunks
     for i in range(0, len(var_codes), CHUNK_SIZE):
         chunk = var_codes[i : i + CHUNK_SIZE]
-
+        print("chunk",len(chunk))
         params = {
             "get": ",".join(chunk + ["NAME"]),
             "for": f"{geography}:*",
@@ -253,3 +261,20 @@ def download_data(
 
     df.replace(BAD_SENTINELS, np.nan, inplace=True)
     return df
+
+
+def check_missing_census_variables(variable_list, url="https://api.census.gov/data/2020/dec/dpgu/variables.json"):
+    print(variable_list)
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise exception for HTTP errors
+        data = response.json()
+
+        available_variables = set(data.get("variables", {}).keys())
+        missing_variables = [var for var in variable_list if var not in available_variables]
+
+        return missing_variables
+
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return []

@@ -152,7 +152,7 @@ Replacing the following parameters as appropriate:
   Captures *only* well‑formed Census codes, avoiding false matches like
   `DP1_0001C_extra`.
 
-* **`TOKEN_RE`** `r"[A-Za-z0-9_]+"`  
+* **`TOKEN_RE`** `r"[A-Za-z0-9_]+"` changed to `\b[A-Z]{1,4}\d{0,3}_[0-9]{4}[A-Z]?\b`
   Finds tokens inside an alias expression so they can be wrapped as
   `df["TOKEN"]` for safe evaluation.
 

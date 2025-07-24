@@ -85,6 +85,7 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
     df = df.copy()  # work on a copy so we never mutate caller dataframe
 
     for alias, expr in alias_map.items():
+
         # 1️ Skip if alias already exists (sometimes the raw column == alias)
         if alias in df.columns:
             continue
@@ -92,6 +93,7 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
         # 2️ If the expression is *just* one token – simplest/fastest path
         if TOKEN_RE.fullmatch(expr):
             df[alias] = pd.to_numeric(df.get(expr, np.nan), errors="coerce")
+            df = _add_percentiles(df, [alias])
             continue
 
         # 3️ Build a *safe* expression by wrapping tokens → df['TOKEN']
@@ -106,6 +108,9 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
 
             df[alias] = pd.eval(safe_expr, local_dict=safe_locals, engine="python")
             print(alias,"👍",safe_expr)
+            print("alias",alias)
+            df = _add_percentiles(df, [alias])
+
         except Exception:
             print(alias,"❌",safe_expr)
             # Any issue → mark as NaN so downstream ranking ignores it
@@ -137,7 +142,7 @@ def _add_percentiles(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFram
 
         spl = f"SPL_{alias}"
         rpl = f"RPL_{alias}"
-
+        print("Calculating ",spl,rpl)
         df[spl] = df[alias]
         # pandas.Series.rank(..., pct=True) → value / (n – 1)
         df[rpl] = df[spl].rank(pct=True).round(4)
@@ -167,6 +172,7 @@ def hsi(df: pd.DataFrame, *, config_path: Path | None = None) -> pd.DataFrame:
     """
     config_path = config_path or DEFAULT_CONFIG
     alias_map = _load_alias_map(config_path)
+
     df = _evaluate_aliases(df, alias_map)
-    df = _add_percentiles(df, alias_map)
+
     return df

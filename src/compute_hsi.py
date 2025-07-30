@@ -106,7 +106,7 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
 
         try:
 
-            df[alias] = pd.eval(safe_expr, local_dict=safe_locals, engine="python")
+            df[alias] = pd.eval(safe_expr, local_dict=safe_locals, engine="python").astype(float)
             print(alias,"👍",safe_expr)
             print("alias",alias)
             df = _add_percentiles(df, [alias])

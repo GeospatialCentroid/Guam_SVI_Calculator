@@ -72,7 +72,7 @@ CHUNK_SIZE = 45
 # Official “no‑data” sentinels used by several Census products.  Mapping them
 # to NaN at ingestion guarantees that all later arithmetic and percentile
 # calculations automatically skip them.
-BAD_SENTINELS = {-888888888, -999999999}
+BAD_SENTINELS = {-888888888, -999999999, -666666666}
 
 ###############################################################################
 # 2.  Tiny helpers – kept private (underscore‑prefixed) because they are

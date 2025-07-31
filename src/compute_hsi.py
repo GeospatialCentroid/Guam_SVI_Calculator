@@ -140,12 +140,10 @@ def _add_percentiles(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFram
         if alias.upper() in skip:
             continue
 
-        spl = f"SPL_{alias}"
         rpl = f"RPL_{alias}"
-        print("Calculating ",spl,rpl)
-        df[spl] = df[alias]
+        print("Calculating ",rpl)
         # pandas.Series.rank(..., pct=True) → value / (n – 1)
-        df[rpl] = df[spl].rank(pct=True).round(4)
+        df[rpl] = df[alias].rank(pct=True).round(4)
 
     return df
 

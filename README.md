@@ -136,7 +136,7 @@ This file has been downloaded for Guam and can be found in 'cache/tl_2020_66_pla
 
 With a places shape file you can call the following script to join the computed HSI values with the shapefile
 ```bash
-python src/join_csv_to_shapefile.py cache/tl_2020_66_place.zip hsi_output.csv PLACEFP place --output cache/joined_places.shp
+python src/join_csv_to_shapefile.py cache/tl_2020_66_place.zip output/hsi_output.csv PLACEFP place --output output/hsi_output.shp
 ```
 Replacing the following parameters as appropriate:
 * cache/tl_2020_66_place.zip: The path to the zipped or unzipped shapefile

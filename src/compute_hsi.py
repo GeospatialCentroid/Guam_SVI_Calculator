@@ -93,7 +93,6 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
         # 2️ If the expression is *just* one token – simplest/fastest path
         if TOKEN_RE.fullmatch(expr):
             df[alias] = pd.to_numeric(df.get(expr, np.nan), errors="coerce")
-            df = _add_percentiles(df, [alias])
             continue
 
         # 3️ Build a *safe* expression by wrapping tokens → df['TOKEN']
@@ -109,8 +108,6 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
             df[alias] = pd.eval(safe_expr, local_dict=safe_locals, engine="python").astype(float)
             print(alias,"👍",safe_expr)
             print("alias",alias)
-            df = _add_percentiles(df, [alias])
-
         except Exception:
             print(alias,"❌",safe_expr)
             # Any issue → mark as NaN so downstream ranking ignores it
@@ -118,34 +115,6 @@ def _evaluate_aliases(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFra
 
     return df
 
-
-def _add_percentiles(df: pd.DataFrame, alias_map: Dict[str, str]) -> pd.DataFrame:
-    """For *each* alias create matching **SPL_*** and **RPL_*** columns.
-
-    * **SPL_ALIAS** – copy of the raw alias value (simple score).  Having a
-      distinct column keeps the door open for future transforms without modifying the original.
-    * **RPL_ALIAS** – percentile rank of SPL_ALIAS within *the entire* dataframe
-      (0 → lowest, 1 → highest).  Percentiles are rounded to 4 decimal places to
-      match CDC/ATSDR SVI convention.
-
-    Population denominators (aliases like ``TOT_POP``) are **excluded** because
-    ranking those makes no conceptual sense in SVI/HSI context.
-    """
-    df = df.copy()
-
-    # Aliases that represent total population – skip percentile logic
-    skip = {"E_TOTPOP", "TOT_POP", "TOTPOP"}
-
-    for alias in alias_map:
-        if alias.upper() in skip:
-            continue
-
-        rpl = f"RPL_{alias}"
-        print("Calculating ",rpl)
-        # pandas.Series.rank(..., pct=True) → value / (n – 1)
-        df[rpl] = df[alias].rank(pct=True).round(4)
-
-    return df
 
 ###############################################################################
 # 3. Public entry point --------------------------------------------------------
@@ -165,8 +134,7 @@ def hsi(df: pd.DataFrame, *, config_path: Path | None = None) -> pd.DataFrame:
     ---------
       1. Load alias→expression map from the CSV.
       2. Evaluate expressions → new alias columns.
-      3. Derive SPL_ & RPL_ percentiles.
-      4. Return a *new* dataframe (original is untouched).
+      3. Return a *new* dataframe (original is untouched).
     """
     config_path = config_path or DEFAULT_CONFIG
     alias_map = _load_alias_map(config_path)

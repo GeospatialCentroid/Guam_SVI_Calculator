@@ -1,4 +1,11 @@
 **Guam HSI (Hazard Susceptibility Index) Calculator**
+
+The Hazard Susceptibility Index (HSI) was created for the Pacific Region to document and display areas within islands and territories that, by the nature of their demographic makeup, infrastructure sitings, or topographical features, may require extra resources or earlier messaging in the event of hazardous weather conditions. 
+The Center for Disease Control’s [Social Vulnerability Index (CDC SVI)](https://www.atsdr.cdc.gov/place-health/php/svi) for the continental United States, upon which the HSI is based, does not extend to many of the islands and territories in the Pacific Region, motivating the creation of this program.
+A number of the variables used in the calculation of the HSI have been expressly selected to be reflective of the demographic makeup of our first test case: the island of Guam.
+
+Expanding on the work of [Paulino et. al. (2021)](https://hazards.colorado.edu/public-health-disaster-research/calculating-the-social-vulnerability-index-for-guam), the HSI incorporates spatial layers representing critical infrastructure locations and topographic features in addition to demographic and socioeconomic layers. 
+
 ---
 
 ## 1 Project Purpose
@@ -7,6 +14,7 @@ The calculator pulls **Decennial Census** variables (2020 by default) and comput
 **alias fields** to mirror the CDC/ATSDR Social‑Vulnerability Index (SVI).  
 Because every transformation is driven by a CSV, **you can swap‑in a different
 variable list** (e.g. Guam, US States) **without touching the Python code**.
+
 
 
 ---
@@ -183,6 +191,15 @@ Replacing the following parameters as appropriate:
 | `--cache-dir` | `cache` | Directory for raw dataset snapshots |
 | `--api-key` | *None* | Optional Census key for higher rate limits |
 
+## Credits and Acknowledgments
+
+Anthony Berardi, Colorado State University
+
+Kevin Worthington, Colorado State University
+
+Jarrod Loerzel, NOAA
+
+Liz Batty, NOAA
 
 ---
 ## References

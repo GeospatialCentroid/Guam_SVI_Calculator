@@ -137,6 +137,8 @@ To calculate ranks use: **df['{previously declared variable}'].rank(pct=True).ro
   message, pointing you to gaps in *variables.csv*.
 * **Expression errors** – Problematic expressions resolve to `NaN`; the rest of
   the pipeline (percentiles, sums) still executes.
+* **Calculation/Download errors** – Be sure to carefully review the downloaded
+  Census data, as some values may not be correct.  
   
 ---
 ## 8 Mapping the data

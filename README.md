@@ -1,10 +1,10 @@
 **Guam HSI (Hazard Susceptibility Index) Calculator**
 
-The Hazard Susceptibility Index (HSI) was created for the Pacific Region to document and display areas within islands and territories that, by the nature of their demographic makeup, infrastructure sitings, or topographical features, may require extra resources or earlier messaging in the event of hazardous weather conditions. 
-The Center for Disease Control’s [Social Vulnerability Index (CDC SVI)](https://www.atsdr.cdc.gov/place-health/php/svi) for the continental United States, upon which the HSI is based, does not extend to many of the islands and territories in the Pacific Region, motivating the creation of this program.
-A number of the variables used in the calculation of the HSI have been expressly selected to be reflective of the demographic makeup of our first test case: the island of Guam.
+The Hazard Susceptibility Viewer (HSV) was created for the Pacific Region to document and display areas within islands and territories that, by the nature of their demographic makeup, infrastructure sitings, or topographical features, may require extra resources or earlier messaging in the event of hazardous weather conditions. 
+The Center for Disease Control’s [Social Vulnerability Index (CDC SVI)](https://www.atsdr.cdc.gov/place-health/php/svi) for the continental United States, upon which the HSV is based, does not extend to many of the islands and territories in the Pacific Region, motivating the creation of this program.
+A number of the variables used in the HSV have been expressly selected to be reflective of the demographic makeup of our first test case: the island of Guam.
 
-Expanding on the work of [Paulino et. al. (2021)](https://hazards.colorado.edu/public-health-disaster-research/calculating-the-social-vulnerability-index-for-guam), the HSI incorporates spatial layers representing critical infrastructure locations and topographic features in addition to demographic and socioeconomic layers. 
+Expanding on the work of [Paulino et. al. (2021)](https://hazards.colorado.edu/public-health-disaster-research/calculating-the-social-vulnerability-index-for-guam), the HSV incorporates spatial layers representing critical infrastructure locations and topographic features in addition to demographic and socioeconomic layers. 
 
 ---
 

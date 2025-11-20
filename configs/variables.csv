@@ -2,20 +2,17 @@ dataset,alias,description,variable
 dpgu,E_TOTPOP,"Population estimate, 2020 Decennial Census",DP1_0001C
 dpgu,E_HU,"Housing units estimate, 2020 Decennial Census",DP4_0001C
 dpgu,E_HH,"Households estimate, 2020 Decennial Census",DP1_0135C
-dpgu,E_POV150,"Persons below 150% poverty estimate,
-2020 Decennial Census",DP3_0151C
+dpgu,E_POV150,"Persons below 150% poverty estimate, 2020 Decennial Census",DP3_0151C
 dpgu,E_UNEMP,"Civilian (age 16+) unemployed estimate, 2020 Decennial Census",DP3_0005C
 dpgu,E_HBURD,"Housing cost-burdened occupied housing units with annual income less than $75,000 (30%+ of income spent on housing costs) estimate, 2020 Decennial Census",DP4_0125C + DP4_0126C
-dpgu,E_NOHSDP,"Persons (age 25+) with no high school
-diploma estimate, 2020 Decennial Census",DP2_0008C + DP2_0009C
+dpgu,E_NOHSDP,"Persons (age 25+) with no high school diploma estimate, 2020 Decennial Census",DP2_0008C + DP2_0009C
 dpgu,E_UNINSUR,"Uninsured in the total civilian noninstitutionalized population estimate, 2020 Decennial Census",DP3_0068C
-dpgu,E_AGE65,"Persons aged 65 and older estimate, 2018-
-2022 ACS",DP1_0024C
+dpgu,E_AGE65,"Persons aged 65 and older estimate, 2018-2022 ACS",DP1_0024C
 dpgu,E_AGE17,"Persons aged 17 and younger estimate, 2020 Decennial Census",DP1_0002C + DP1_0003C + DP1_0004C + DP1_0005C
 dpgu,E_DISABL,"Civilian noninstitutionalized population with a disability estimate, 2020 Decennial Census",DP2_0102C
 dpgu,E_SNGPNT,"Single-parent household with children under 18 estimate, 2020 Decennial Census",DP1_0141C + DP1_0143C
 dpgu,E_LIMENG,"Persons (age 5+) who speak English ""less than well"" estimate, 2020 Decennial Census",DP2_0178C + DP2_0182C + DP2_0185C + DP2_0188C + DP2_0191C
-dpgu,E_MINRTY,"Population in households born outside Guam, other U.S. Island Areas, Puerto Rico, and the United States (excluding people in military housing units) estimate, 2020 Decennial Census*",DP2_0151C
+dpgu,E_MINRTY,"Population in households born outside Guam, other U.S. Island Areas, Puerto Rico, and the United States (excluding people in military housing units) estimate, 2020 Decennial Census",DP2_0151C
 dpgu,E_MUNIT,"Housing in structures with 10 or more units estimate, 2020 Decennial Census",DP4_0022C + DP4_0023C + DP4_0024C
 dpgu,E_MOBILE,"Mobile homes estimate, 2020 Decennial Census",DP4_0025C
 dpgu,E_CROWD,"At household level (occupied housing units), more people than rooms estimate, 2020 Decennial Census",DP4_0083C + DP4_0084C
@@ -31,7 +28,7 @@ dpgu,EP_AGE17,"Percentage of persons aged 17 and younger estimate, 2020 Decennia
 dpgu,EP_DISABL,"Percentage of civilian noninstitutionalized population with a disability estimate, 2018- 2020 Decennial Census",DP2_0102P
 dpgu,EP_SNGPNT,"Percentage of single-parent households with children under 18 estimate, 2020 Decennial Census",DP1_0141P + DP1_0143P
 dpgu,EP_LIMENG,"Percentage of persons (age 5+) who speak English ""less than well"" estimate, 2020 Decennial Census",DP2_0178P + DP2_0182P + DP2_0185P + DP2_0188P + DP2_0191P
-dpgu,EP_MINRTY,"Percentage of population in households born outside Guam, other U.S. Island Areas, Puerto Rico, and the United States (excluding people in military housing units) estimate, 2020 Decennial Census*",DP2_0151P
+dpgu,EP_MINRTY,"Percentage of population in households born outside Guam, other U.S. Island Areas, Puerto Rico, and the United States (excluding people in military housing units) estimate, 2020 Decennial Census",(DP2_0151C/DP1_0001C)*100
 dpgu,EP_MUNIT,"Percentage of housing in structures with 10 or more units estimate",DP4_0022P + DP4_0023P + DP4_0024P
 dpgu,EP_MOBILE,Percentage of mobile homes estimate,DP4_0025P
 dpgu,EP_CROWD,"Percentage of occupied housing units with more people than rooms estimate",DP4_0083P + DP4_0084P
@@ -51,8 +48,8 @@ dpgu,EPL_SNGPNT,Percentile percentage of single-parent households with children 
 dpgu,EPL_LIMENG,"Percentile percentage of persons (age 5+) who speak English ""less than well"" estimate",df['EP_LIMENG'].rank(pct=True).round(4)
 dpgu,SPL_THEME2,Sum of series for Household Characteristics theme,df['EPL_AGE65']+df['EPL_AGE17']+df['EPL_DISABL']+df['EPL_SNGPNT']+df['EPL_LIMENG']
 dpgu,RPL_THEME2,Percentile ranking for Household Characteristics theme summary,df['SPL_THEME2'].rank(pct=True).round(4)
-dpgu,EPL_MINRTY,"Percentile percentage of population in households born outside Guam, other U.S. Island Areas, Puerto Rico, and the United States (excluding people in military housing units) estimate*",df['EP_MINRTY'].rank(pct=True).round(4)
-dpgu,SPL_THEME3,Sum of series for Racial and Ethnic Minority Status theme,df['EP_MINRTY'].rank(pct=True).round(4)
+dpgu,EPL_MINRTY,"Percentile percentage of population in households born outside Guam, other U.S. Island Areas, Puerto Rico, and the United States (excluding people in military housing units) estimate",df['EP_MINRTY'].rank(pct=True).round(4)
+dpgu,SPL_THEME3,Sum of series for Racial and Ethnic Minority Status theme,df['EPL_MINRTY']
 dpgu,RPL_THEME3,"Percentile ranking for Racial and Ethnic Minority Status theme",df['SPL_THEME3'].rank(pct=True).round(4)
 dpgu,EPL_MUNIT,"Percentile percentage housing in structures with 10 or more units estimate",df['EP_MUNIT'].rank(pct=True).round(4)
 dpgu,EPL_MOBILE,Percentile percentage mobile homes estimate,df['EP_MOBILE'].rank(pct=True).round(4)
@@ -61,7 +58,7 @@ dpgu,EPL_NOVEH,Percentile percentage households with no vehicle available estima
 dpgu,EPL_GROUPQ,"Percentile percentage of persons in group quarters estimate",df['EP_GROUPQ'].rank(pct=True).round(4)
 dpgu,SPL_THEME4,Sum of series for Housing Type/ Transportation theme,df['EPL_MUNIT']+df['EPL_MOBILE']+df['EPL_CROWD']+df['EPL_NOVEH']+df['EPL_GROUPQ']
 dpgu,RPL_THEME4,"Percentile ranking for Housing Type/ Transportation theme",df['SPL_THEME4'].rank(pct=True).round(4)
-dpgu,SPL_THEMES,Sum of series themes,df['RPL_THEME1']+df['RPL_THEME2']+df['RPL_THEME3']+df['RPL_THEME4']
+dpgu,SPL_THEMES,Sum of series themes,df['SPL_THEME1']+df['SPL_THEME2']+df['SPL_THEME3']+df['SPL_THEME4']
 dpgu,RPL_THEMES,Overall percentile ranking,df['SPL_THEMES'].rank(pct=True).round(4)
 dpgu,F_POV150,"Flag - the percentage of persons below 150% poverty is in the 90th percentile (1 = yes, 0 = no)",DP3_0151P >= 0.90
 dpgu,F_UNEMP,"Flag - the percentage of civilian unemployed is in the 90th percentile (1 = yes, 0 = no)",DP3_0009P >= 0.90
@@ -85,3 +82,4 @@ dpgu,F_GROUPQ,"Flag - the percentage of persons in group quarters is in the 90th
 dpgu,F_THEME4,Sum of flags for Housing Type/ Transportation theme,df['F_MUNIT']+df['F_MOBILE']+df['F_CROWD']+df['F_NOVEH']+df['F_GROUPQ']
 
 dpgu,F_TOTAL,Sum of flags for the four themes,df['F_THEME1']+df['F_THEME2']+df['F_THEME3']+df['F_THEME4']
+
